@@ -44,10 +44,10 @@ End-to-end NFL data platform project that ingests multi-domain NFL datasets (pla
 
 ## Roadmap (Milestones)
 
-✅ Bronze: schedules ingestion
-Silver: PySpark cleaning + standardization
-Add more datasets: pbp, weekly, rosters, lines, draft, combine, officials, ID mappings
-Orchestration: Dagster/Airflow end-to-end runs
-Gold: warehouse + dbt marts/metrics + docs/lineage
-Data quality + CI/CD: automated tests/checks on PRs
-Tableau dashboards + Streamlit app powered by Gold marts
+- ✅ Bronze: schedules ingestion
+- Silver: PySpark cleaning + standardization
+- Add more datasets: pbp, weekly, rosters, lines, draft, combine, officials, ID mappings
+- Orchestration: Dagster/Airflow end-to-end runs
+- Gold: warehouse + dbt marts/metrics + docs/lineage
+- Data quality + CI/CD: automated tests/checks on PRs
+- Tableau dashboards + Streamlit app powered by Gold marts
