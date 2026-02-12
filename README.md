@@ -2,10 +2,6 @@
 
 End-to-end NFL data platform project that ingests multi-domain NFL datasets (play-by-play, weekly, seasonal, rosters, schedules, lines, win totals, officials, draft picks/values, combine results, and ID mappings), stores raw data in a **Bronze** layer, cleans/enriches data with **PySpark** into **Silver**, and (later) publishes analytics-ready **Gold** marts via **dbt** into a warehouse (Snowflake/Redshift).
 
-**Downstream apps (locked in):**
-- **Tableau** dashboards (BI / stakeholder reporting)
-- **Streamlit** interactive app (data product / exploration)
-
 ---
 
 ## Goals
