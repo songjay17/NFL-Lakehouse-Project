@@ -1,11 +1,38 @@
-# Python
+# --- Python ---
 .venv/
 __pycache__/
-*.pyc
+*.py[cod]
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 
-# Data (don’t commit raw/parquet)
+# --- Dagster ---
+.dagster/
+dagster_home/
+*.db
+*.sqlite
+
+# --- Spark / PySpark ---
+spark-warehouse/
+metastore_db/
+derby.log
+*.jks
+
+# --- Data artifacts ---
 data/
+*.parquet
+*.csv
+*.jsonl
 
-# Env
+# --- Env / secrets ---
 .env
+.env.*
+!.env.example
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

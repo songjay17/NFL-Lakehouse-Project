@@ -1,0 +1,15 @@
+[32m2026-02-12 12:51:05 -0500[0m - dagster - [34mDEBUG[0m - schedules_bronze_to_silver - cf6622a0-e993-4466-b181-31c6e4556638 - 139303 - LOGS_CAPTURED - Started capturing logs in process (pid: 139303).
+[32m2026-02-12 12:51:05 -0500[0m - dagster - [34mDEBUG[0m - schedules_bronze_to_silver - cf6622a0-e993-4466-b181-31c6e4556638 - 139303 - clean_schedules - STEP_START - Started execution of step "clean_schedules".
+WARNING: Using incubator modules: jdk.incubator.vector
+Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
+26/02/12 12:51:06 WARN Utils: Your hostname, DESKTOP-AT88A0Q, resolves to a loopback address: 127.0.1.1; using 10.255.255.254 instead (on interface lo)
+26/02/12 12:51:06 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/02/12 12:51:07 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+26/02/12 12:51:11 WARN SparkStringUtils: Truncated the string representation of a plan since it was too large. This behavior can be adjusted by setting 'spark.sql.debug.maxToStringFields'.
+[Stage 1:>                                                          (0 + 1) / 1][Stage 3:>                                                          (0 + 1) / 1]                                                                                [32m2026-02-12 12:51:15 -0500[0m - dagster - [34mDEBUG[0m - schedules_bronze_to_silver - cf6622a0-e993-4466-b181-31c6e4556638 - 139303 - clean_schedules - STEP_OUTPUT - Yielded output "result" of type "Any". (Type check passed).
+[32m2026-02-12 12:51:15 -0500[0m - dagster - [34mDEBUG[0m - schedules_bronze_to_silver - cf6622a0-e993-4466-b181-31c6e4556638 - clean_schedules - Writing file at: /home/jsong17/dev/nfl-lakehouse/.tmp_dagster_home_qf5ilk60/storage/cf6622a0-e993-4466-b181-31c6e4556638/clean_schedules/result using PickledObjectFilesystemIOManager...
+[32m2026-02-12 12:51:15 -0500[0m - dagster - [34mDEBUG[0m - schedules_bronze_to_silver - cf6622a0-e993-4466-b181-31c6e4556638 - 139303 - clean_schedules - HANDLED_OUTPUT - Handled output "result" using IO manager "io_manager"
+[32m2026-02-12 12:51:15 -0500[0m - dagster - [34mDEBUG[0m - schedules_bronze_to_silver - cf6622a0-e993-4466-b181-31c6e4556638 - 139303 - clean_schedules - STEP_SUCCESS - Finished execution of step "clean_schedules" in 10.23s.
