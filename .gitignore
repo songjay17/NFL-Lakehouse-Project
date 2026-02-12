@@ -1,0 +1,11 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Data (don’t commit raw/parquet)
+data/
+
+# Env
+.env
