@@ -29,7 +29,7 @@ def main(season: int):
         .withColumn("season", F.lit(int(season)).cast(T.IntegerType()))
         .withColumn("week", F.col("week").cast(T.IntegerType()))
         .withColumn("home_team", F.upper(F.col("home_team")))
-        .withColumn("away_yeam", F.upper(F.col("home_team")))
+        .withColumn("away_team", F.upper(F.col("away_team")))
     )
 
     out_dir = Path(f"data/silver/schedules_clean/season={season}")
