@@ -2,17 +2,14 @@ import argparse
 from pathlib import Path
 from pyspark.sql import SparkSession, functions as F, types as T
 
-def main(season: int):
-    spark = (
-        SparkSession.builder
-            .appName("nfl_lakehouse_clean_schedules")
-            .master("local[*]")
-            .getOrCreate()
-    )
+from nfl_lakehouse.common.spark_io import get_spark, write_silver_parquet_spark
 
-    bronze_path = Path(f"data/bronze/schedules/season={season}/data.parquet")
+def main(season: int):
+    spark = get_spark(app_name="nfl_lakehouse_clean_schedules")
+
+    bronze_path = Path(f"data/bronze/schedules/season={season}")
     if not bronze_path.exists():
-        raise FileNotFoundError(f"Bronze file not found: {bronze_path}")
+        raise FileNotFoundError(f"Bronze path not found: {bronze_path}")
     
     df = spark.read.parquet(str(bronze_path))
 
@@ -32,17 +29,14 @@ def main(season: int):
         .withColumn("away_team", F.upper(F.col("away_team")))
     )
 
-    out_dir = Path(f"data/silver/schedules_clean/season={season}")
-    out_dir.mkdir(parents=True, exist_ok=True)
-
-    (
-        cleaned
-        .repartition(1)
-        .write.mode("overwrite")
-        .parquet(str(out_dir))
+    out_dir = write_silver_parquet_spark(
+        cleaned,
+        dataset="schedules_clean",
+        partition_by=("season",),
+        add_loaded_at=True,
     )
 
-    print(f"Wrote Silver schedules to {out_dir}")
+    print(f"Wrote Silver schedules to {out_dir} (season={season})")
     spark.stop()
 
 if __name__ == "__main__":

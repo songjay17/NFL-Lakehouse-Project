@@ -1,6 +1,7 @@
 import argparse
 from pathlib import Path
 import shutil
+import polars as pl
 
 from pyspark.sql import functions as F, types as T
 
@@ -10,21 +11,10 @@ from nfl_lakehouse.sources.nflreadpy_source import load_pbp
 
 def main(season: int):
     # 1) Load PBP via nflreadpy helper
-    df = load_pbp(season)
+    pl_df = load_pbp(season)
 
-    # nflreadpy often returns polars; if it's pandas, convert to polars (for safe parquet writing)
-    try:
-        import polars as pl
-    except ImportError as e:
-        raise ImportError(
-            "polars is required for this ingestion approach. Install with: python3 -m pip install polars"
-        ) from e
-
-    if hasattr(df, "write_parquet"):  # already polars
-        pl_df = df
-    else:
-        # assume pandas
-        pl_df = pl.from_pandas(df)
+    if not hasattr(pl_df, "write_parquet"):
+        raise TypeError(f"load_pbp returned {type(pl_df)}; expected a Polars DataFrame.")
 
     # 2) Write a TEMP parquet file using Polars (schema is embedded -> Spark won't infer types)
     tmp_dir = Path("data") / "_tmp" / "pbp_extract" / f"season={season}"

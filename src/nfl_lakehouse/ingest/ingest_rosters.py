@@ -9,20 +9,11 @@ from nfl_lakehouse.sources.nflreadpy_source import load_rosters
 
 
 def main(season: int):
-    df = load_rosters(season)
-
-    try:
-        import polars as pl
-    except ImportError as e:
-        raise ImportError(
-            "polars is required for this ingestion approach. Install with: python3 -m pip install polars"
-        ) from e
-
-    if hasattr(df, "write_parquet"):  # already polars
-        pl_df = df
-    else:
-        pl_df = pl.from_pandas(df)
-
+    pl_df = load_rosters(season)
+    
+    if not hasattr(pl_df, "write_parquet"):
+        raise TypeError(f"load_rosters returned {type(pl_df)}; expected a Polars DataFrame.")
+    
     tmp_dir = Path("data") / "_tmp" / "rosters_extract" / f"season={season}"
     tmp_dir.mkdir(parents=True, exist_ok=True)
     tmp_parquet = tmp_dir / "rosters.parquet"

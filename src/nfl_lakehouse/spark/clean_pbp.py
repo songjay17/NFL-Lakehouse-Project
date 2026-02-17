@@ -2,17 +2,14 @@ import argparse
 from pathlib import Path
 from pyspark.sql import SparkSession, functions as F, types as T
 
-def main(season: int):
-    spark = (
-        SparkSession.builder
-            .appName("nfl_lakehouse_clean_pbp")
-            .master("local[*]")
-            .getOrCreate()
-    )
+from nfl_lakehouse.common.spark_io import get_spark, write_silver_parquet_spark
 
-    bronze_path = Path(f"data/bronze/pbp/season={season}/data.parquet")
+def main(season: int):
+    spark = get_spark(app_name="nfl_lakehouse_clean_pbp")
+
+    bronze_path = Path(f"data/bronze/pbp/season={season}")
     if not bronze_path.exists():
-        raise FileNotFoundError(f"Bronze file not found: {bronze_path}")
+        raise FileNotFoundError(f"Bronze path not found: {bronze_path}")
     
     #Creating the dataframe through PySpark
     df = spark.read.parquet(str(bronze_path))
@@ -39,19 +36,14 @@ def main(season: int):
         .transform(lambda d: d.withColumn("defteam", F.upper(F.col("defteam"))) if "defteam" in d.columns else d)
     )
 
-    #Adding pipeline timestamp for lineage/debug
-    cleaned = cleaned.withColumn("silver_loaded_at", F.current_timestamp())
-
-    out_dir = Path(f"data/silver/pbp_clean/season={season}")
-    out_dir.mkdir(parents=True, exist_ok=True)
-
-    (
-        cleaned
-        .write.mode("overwrite")
-        .parquet(str(out_dir))
+    out_dir = write_silver_parquet_spark(
+        cleaned,
+        dataset="pbp_clean",
+        partition_by = ("season",), 
+        add_loaded_at=True
     )
 
-    print(f"Wrote Silver play-by-play to {out_dir}")
+    print(f"Wrote Silver play-by-play to {out_dir} (season={season})")
     spark.stop()
 
 if __name__ == "__main__":

@@ -9,19 +9,10 @@ from nfl_lakehouse.sources.nflreadpy_source import load_schedules
 
 
 def main(season: int):
-    df = load_schedules(season)
+    pl_df = load_schedules(season)
 
-    try:
-        import polars as pl
-    except ImportError as e:
-        raise ImportError(
-            "polars is required for this ingestion approach. Install with: python3 -m pip install polars"
-        ) from e
-
-    if hasattr(df, "write_parquet"):  # already polars
-        pl_df = df
-    else:
-        pl_df = pl.from_pandas(df)
+    if not hasattr(pl_df, "write_parquet"):
+        raise TypeError(f"load_schedules returned {type(pl_df)}; expected a Polars DataFrame.")
 
     tmp_dir = Path("data") / "_tmp" / "schedules_extract" / f"season={season}"
     tmp_dir.mkdir(parents=True, exist_ok=True)
