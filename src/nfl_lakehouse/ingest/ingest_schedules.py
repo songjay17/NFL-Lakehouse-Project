@@ -30,11 +30,12 @@ def main(season: int):
     else:
         sdf = sdf.withColumn("season", F.col("season").cast(T.IntegerType()))
 
-    # Minimal sanity check
-    if "game_id" in sdf.columns:
-        null_game_id = sdf.filter(F.col("game_id").isNull()).count()
-        if null_game_id > 0:
-            raise ValueError(f"Found {null_game_id} rows with null game_id in schedules.")
+    if "game_id" not in sdf.columns:
+        raise ValueError("Missing required column in schedules: game_id")
+
+    null_game_id = sdf.filter(F.col("game_id").isNull()).count()
+    if null_game_id > 0:
+        raise ValueError(f"Found {null_game_id} rows with null game_id in schedules.")
 
     out_dir = write_bronze_parquet_spark(
         sdf,

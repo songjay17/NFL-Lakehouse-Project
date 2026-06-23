@@ -1,7 +1,6 @@
 import argparse
 from pathlib import Path
 import shutil
-import polars as pl
 
 from pyspark.sql import functions as F, types as T
 

@@ -30,11 +30,12 @@ def main(season: int):
     else:
         sdf = sdf.withColumn("season", F.col("season").cast(T.IntegerType()))
 
-    # Optional sanity check if column exists
-    if "player_id" in sdf.columns:
-        null_player_id = sdf.filter(F.col("player_id").isNull()).count()
-        if null_player_id > 0:
-            raise ValueError(f"Found {null_player_id} rows with null player_id in rosters.")
+    if "gsis_id" not in sdf.columns:
+        raise ValueError("Missing required column in rosters: gsis_id")
+
+    null_gsis_id = sdf.filter(F.col("gsis_id").isNull()).count()
+    if null_gsis_id > 0:
+        raise ValueError(f"Found {null_gsis_id} rows with null gsis_id in rosters.")
 
     out_dir = write_bronze_parquet_spark(
         sdf,

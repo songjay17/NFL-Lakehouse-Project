@@ -24,7 +24,7 @@ def silver_path(dataset: str) -> str:
 def write_bronze_parquet_spark(df: DataFrame, dataset: str, *, mode: str = "overwrite", partition_by: Optional[Iterable[str]] = ("season",),) -> str:
     out_dir = bronze_path(dataset)
 
-    writer = df.write.mode(mode).format("parquet")
+    writer = df.write.mode(mode).format("parquet").option("compression", "snappy")
     if partition_by:
         writer = writer.partitionBy(*list(partition_by))
 
@@ -36,8 +36,8 @@ def write_silver_parquet_spark(df: DataFrame, dataset: str, *, mode: str = "over
 
     if add_loaded_at and loaded_at_col:
         df = df.withColumn(loaded_at_col, F.current_timestamp())
-    
-    writer = df.write.mode(mode).format("parquet")
+
+    writer = df.write.mode(mode).format("parquet").option("compression", "snappy")
     if partition_by:
         writer = writer.partitionBy(*list(partition_by))
     
