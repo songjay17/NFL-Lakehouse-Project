@@ -62,13 +62,13 @@ def main(season: int):
 
     out_dir = write_silver_parquet_spark(
         cleaned,
-        dataset="schedules_clean",
+        dataset="rosters_clean",
         partition_by=("season",),
         add_loaded_at=True,
         loaded_at_col="silver_loaded_at"
     )
 
-    print(f"Wrote Silver schedules to {out_dir} (season = {season})")
+    print(f"Wrote Silver rosters to {out_dir} (season = {season})")
     spark.stop()
 
 if __name__ == "__main__":
