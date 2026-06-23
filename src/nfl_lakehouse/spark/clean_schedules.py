@@ -1,6 +1,6 @@
 import argparse
 from pathlib import Path
-from pyspark.sql import SparkSession, functions as F, types as T
+from pyspark.sql import functions as F, types as T
 
 from nfl_lakehouse.common.spark_io import get_spark, write_silver_parquet_spark
 
@@ -25,8 +25,8 @@ def main(season: int):
         .dropDuplicates(["game_id"])
         .withColumn("season", F.lit(int(season)).cast(T.IntegerType()))
         .withColumn("week", F.col("week").cast(T.IntegerType()))
-        .withColumn("home_team", F.upper(F.col("home_team")))
-        .withColumn("away_team", F.upper(F.col("away_team")))
+        .transform(lambda d: d.withColumn("home_team", F.upper(F.col("home_team"))) if "home_team" in d.columns else d)
+        .transform(lambda d: d.withColumn("away_team", F.upper(F.col("away_team"))) if "away_team" in d.columns else d)
     )
 
     out_dir = write_silver_parquet_spark(

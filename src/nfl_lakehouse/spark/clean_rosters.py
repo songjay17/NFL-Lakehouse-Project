@@ -14,12 +14,12 @@ def main(season: int):
     #Creating the dataframe through PySpark
     df = spark.read.parquet(str(bronze_path))
 
+    if "gsis_id" not in df.columns:
+        raise ValueError("rosters missing key field gsis_id")
+
     df = (df
         .withColumnRenamed("gsis_id", "player_id")
-        .withColumn("season", F.lit(int(season))))
-
-    if "player_id" not in df.columns:
-        raise ValueError("rosters missing key field player_id")
+        .withColumn("season", F.lit(int(season)).cast(T.IntegerType())))
     
     key_cols = ["player_id", "season"]
 

@@ -1,6 +1,6 @@
 import argparse
 from pathlib import Path
-from pyspark.sql import SparkSession, functions as F, types as T
+from pyspark.sql import functions as F, types as T
 
 from nfl_lakehouse.common.spark_io import get_spark, write_silver_parquet_spark
 
