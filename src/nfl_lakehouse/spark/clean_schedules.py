@@ -1,43 +1,34 @@
 import argparse
-from pathlib import Path
-from pyspark.sql import functions as F, types as T
+from pyspark.sql import DataFrame, functions as F, types as T
 
-from nfl_lakehouse.common.spark_io import get_spark, write_silver_parquet_spark
+from nfl_lakehouse.common.silver_clean import clean_silver
 
-def main(season: int):
-    spark = get_spark(app_name="nfl_lakehouse_clean_schedules")
 
-    bronze_path = Path(f"data/bronze/schedules/season={season}")
-    if not bronze_path.exists():
-        raise FileNotFoundError(f"Bronze path not found: {bronze_path}")
-    
-    df = spark.read.parquet(str(bronze_path))
-
-    # ---- Silver cleaning (minimal) ----
-    # 1) enforce key + drop duplicates
-    # 2) standardize team abbreviations
-    # 3) cast types for predictable downstream joins
-    # 4) add partition columns (season) for consistency
-
-    cleaned = (
+def _transform(df: DataFrame) -> DataFrame:
+    return (
         df
         .filter(F.col("game_id").isNotNull())
         .dropDuplicates(["game_id"])
-        .withColumn("season", F.lit(int(season)).cast(T.IntegerType()))
-        .withColumn("week", F.col("week").cast(T.IntegerType()))
+        .withColumn("season", F.col("season").cast(T.IntegerType()))
+        .transform(lambda d: d.withColumn("week", F.col("week").cast(T.IntegerType())) if "week" in d.columns else d)
         .transform(lambda d: d.withColumn("home_team", F.upper(F.col("home_team"))) if "home_team" in d.columns else d)
         .transform(lambda d: d.withColumn("away_team", F.upper(F.col("away_team"))) if "away_team" in d.columns else d)
     )
 
-    out_dir = write_silver_parquet_spark(
-        cleaned,
-        dataset="schedules_clean",
-        partition_by=("season",),
-        add_loaded_at=True,
+
+def main(season: int):
+    clean_silver(
+        dataset="schedules",
+        bronze_dataset="schedules",
+        silver_dataset="schedules_clean",
+        season=season,
+        transform=_transform,
+        null_rate_checks=[
+            ("home_team", 0.10),
+            ("away_team", 0.10),
+        ],
     )
 
-    print(f"Wrote Silver schedules to {out_dir} (season={season})")
-    spark.stop()
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
