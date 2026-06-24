@@ -1,6 +1,6 @@
 # NFL Lakehouse
 
-An end-to-end data engineering platform for NFL analytics, built on the **Bronze → Silver → Gold** medallion architecture. Ingests multi-domain NFL datasets, cleans and standardizes them with PySpark, and orchestrates all pipelines with Dagster — with a Gold layer (dbt + cloud warehouse) and visualization layer (Tableau + Streamlit) planned.
+An end-to-end data engineering platform for NFL analytics, built on the **Bronze → Silver → Gold** medallion architecture. Ingests multi-domain NFL datasets, cleans and standardizes them with PySpark, and orchestrates all pipelines with Dagster — with a Gold layer (dbt + BigQuery) and visualization layer (Hex) planned.
 
 ---
 
@@ -19,10 +19,10 @@ Bronze Layer          ← raw, partitioned by season
 Silver Layer          ← cleaned, deduplicated, standardized
     │  dbt (planned)
     ▼
-Gold Layer            ← fact/dimension tables in Snowflake/Redshift (planned)
+Gold Layer            ← fact/dimension tables in BigQuery (planned)
     │
     ▼
-Tableau + Streamlit   (planned)
+Hex                   (planned)
 ```
 
 ---
@@ -36,10 +36,10 @@ Tableau + Streamlit   (planned)
 | Transformation | PySpark 4.x (local mode) |
 | Orchestration | Dagster |
 | Storage format | Apache Parquet, partitioned by `season` |
-| Warehouse (planned) | Snowflake or Redshift |
+| Warehouse (planned) | Google BigQuery |
 | Modeling (planned) | dbt (tests, docs, lineage) |
 | Data quality (planned) | Great Expectations or Soda |
-| Visualization (planned) | Tableau + Streamlit |
+| Visualization (planned) | Hex |
 
 ---
 
@@ -110,7 +110,7 @@ Open `http://localhost:3000` and run any of the three jobs with a `season` confi
 - ✅ Silver cleaning: schedules, PBP, rosters
 - ✅ Dagster orchestration for all three pipelines
 - Additional datasets: weekly stats, lines, officials, draft, combine, ID mappings
-- Gold layer: dbt models, tests, and docs published to Snowflake/Redshift
+- Gold layer: dbt models, tests, and docs published to BigQuery
 - Data quality gates: automated checks on Bronze → Silver transitions
 - CI/CD: pipeline validation on PRs
-- Tableau dashboards + Streamlit app powered by Gold marts
+- Hex dashboards powered by Gold marts
